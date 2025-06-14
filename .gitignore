@@ -1,0 +1,5 @@
+.env
+venv/
+*.bat
+*.sh
+# Byte-compiled / optimized / DLL files
