@@ -17,7 +17,7 @@ import torch
 class MedGemmaTest:
     def __init__(self):
         """Inizializza il sistema MedGemma"""
-        print("🏥 INIZIALIZZAZIONE MEDGEMMA")
+        print("INIZIALIZZAZIONE MEDGEMMA")
         print("=" * 50)
         
         # Carica configurazione
@@ -32,7 +32,7 @@ class MedGemmaTest:
         # Carica modello
         self._load_model()
         
-        print("✅ MedGemma pronto per l'uso!")
+        print("MedGemma pronto per l'uso!")
         print("=" * 50)
 
     def _load_config(self):
@@ -48,60 +48,60 @@ class MedGemmaTest:
         self.debug = os.getenv("DEBUG", "true").lower() == "true"
         
         if not self.hf_token or self.hf_token.startswith("hf_xxx"):
-            print("❌ ERRORE: HF_TOKEN non configurato!")
-            print("💡 Vai su https://huggingface.co/settings/tokens")
-            print("💡 Crea un nuovo token e aggiorna il file .env")
+            print("ERRORE: HF_TOKEN non configurato!")
+            print("Vai su https://huggingface.co/settings/tokens")
+            print("Crea un nuovo token e aggiorna il file .env")
             sys.exit(1)
         
         if self.debug:
-            print(f"📋 Modello: {self.model_name}")
-            print(f"💻 Device: {self.device}")
-            print(f"🔧 Dtype: {self.torch_dtype}")
+            print(f"Modello: {self.model_name}")
+            print(f"Device: {self.device}")
+            print(f"Dtype: {self.torch_dtype}")
 
     def _authenticate(self):
         """Autentica con Hugging Face"""
         try:
-            print("🔑 Autenticazione Hugging Face...")
+            print("Autenticazione Hugging Face...")
             login(token=self.hf_token, add_to_git_credential=False)
-            print("✅ Autenticazione riuscita")
+            print("Autenticazione riuscita")
         except Exception as e:
-            print(f"❌ Errore autenticazione: {e}")
+            print(f"Errore autenticazione: {e}")
             sys.exit(1)
 
     def _check_hardware(self):
         """Verifica hardware disponibile"""
-        print("🖥️ Controllo hardware...")
+        print("Controllo hardware...")
         
         # Check CUDA
         if torch.cuda.is_available():
             gpu_name = torch.cuda.get_device_name(0)
             gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
-            print(f"✅ GPU: {gpu_name}")
-            print(f"📊 VRAM: {gpu_memory:.1f} GB")
+            print(f"GPU: {gpu_name}")
+            print(f"VRAM: {gpu_memory:.1f} GB")
             
             if gpu_memory < 6:
-                print("⚠️ ATTENZIONE: VRAM bassa, possibili problemi di memoria")
-                print("💡 Considera device='cpu' nel .env se hai errori")
+                print("ATTENZIONE: VRAM bassa, possibili problemi di memoria")
+                print("Considera device='cpu' nel .env se hai errori")
         else:
-            print("⚠️ GPU non disponibile, usando CPU")
-            print("💡 Il processing sarà più lento ma funziona")
+            print("GPU non disponibile, usando CPU")
+            print("Il processing sarà più lento ma funziona")
         
         # Check RAM
         try:
             import psutil
             ram_gb = psutil.virtual_memory().total / 1024**3
-            print(f"💾 RAM: {ram_gb:.1f} GB")
+            print(f"RAM: {ram_gb:.1f} GB")
             
             if ram_gb < 8:
-                print("⚠️ ATTENZIONE: RAM limitata, possibili problemi")
+                print("ATTENZIONE: RAM limitata, possibili problemi")
         except ImportError:
-            print("💡 Installa psutil per monitoraggio RAM: pip install psutil")
+            print("Installa psutil per monitoraggio RAM: pip install psutil")
 
     def _load_model(self):
         """Carica il modello MedGemma"""
         try:
-            print(f"🤖 Caricamento {self.model_name}...")
-            print("⏳ Questo può richiedere alcuni minuti la prima volta...")
+            print(f"Caricamento {self.model_name}...")
+            print("Questo può richiedere alcuni minuti la prima volta...")
             
             # Configura dtype
             dtype_map = {
@@ -120,20 +120,20 @@ class MedGemmaTest:
                 trust_remote_code=True  # Necessario per alcuni modelli
             )
             
-            print("✅ Modello caricato con successo!")
+            print("Modello caricato con successo!")
             
         except Exception as e:
-            print(f"❌ Errore caricamento modello: {e}")
+            print(f"Errore caricamento modello: {e}")
             
             # Suggerimenti troubleshooting
             if "gated" in str(e).lower():
-                print("\n🔒 MODELLO GATED - RICHIEDI ACCESSO:")
+                print("\nMODELLO GATED - RICHIEDI ACCESSO:")
                 print(f"1. Vai su https://huggingface.co/{self.model_name}")
                 print("2. Click 'Request access'")
                 print("3. Compila il form e aspetta approvazione")
                 
             elif "memory" in str(e).lower() or "cuda out of memory" in str(e).lower():
-                print("\n💾 ERRORE MEMORIA - SOLUZIONI:")
+                print("\nERRORE MEMORIA - SOLUZIONI:")
                 print("1. Chiudi altre applicazioni")
                 print("2. Cambia DEVICE=cpu nel .env")
                 print("3. Cambia TORCH_DTYPE=float16 nel .env")
@@ -143,7 +143,7 @@ class MedGemmaTest:
     def analyze_image_from_url(self, image_url, question="Describe this medical image"):
         """Analizza immagine da URL"""
         try:
-            print(f"\n🖼️ Scaricamento immagine da: {image_url}")
+            print(f"\nScaricamento immagine da: {image_url}")
             
             # Scarica immagine
             headers = {"User-Agent": "MedGemma-Test/1.0"}
@@ -151,33 +151,33 @@ class MedGemmaTest:
             response.raise_for_status()
             
             image = Image.open(response.raw)
-            print(f"✅ Immagine caricata: {image.size}")
+            print(f"Immagine caricata: {image.size}")
             
             return self.analyze_image(image, question)
             
         except Exception as e:
-            return f"❌ Errore download immagine: {e}"
+            return f"Errore download immagine: {e}"
 
     def analyze_image_from_file(self, image_path, question="Describe this medical image"):
         """Analizza immagine da file locale"""
         try:
             if not os.path.exists(image_path):
-                return f"❌ File non trovato: {image_path}"
+                return f"File non trovato: {image_path}"
             
-            print(f"\n📁 Caricamento da: {image_path}")
+            print(f"\nCaricamento da: {image_path}")
             image = Image.open(image_path)
-            print(f"✅ Immagine caricata: {image.size}")
+            print(f"Immagine caricata: {image.size}")
             
             return self.analyze_image(image, question)
             
         except Exception as e:
-            return f"❌ Errore caricamento file: {e}"
+            return f"Errore caricamento file: {e}"
 
     def analyze_image(self, image, question):
         """Analizza immagine con MedGemma"""
         try:
-            print(f"🔍 Analisi in corso...")
-            print(f"❓ Domanda: {question}")
+            print(f"Analisi in corso...")
+            print(f"Domanda: {question}")
             
             # Prepara messagi per MedGemma
             messages = [
@@ -205,15 +205,15 @@ class MedGemmaTest:
             # Estrai risposta
             response = output[0]["generated_text"][-1]["content"]
             
-            print("✅ Analisi completata!")
+            print("Analisi completata!")
             return response
             
         except Exception as e:
-            return f"❌ Errore durante analisi: {e}"
+            return f"Errore durante analisi: {e}"
 
     def interactive_mode(self):
         """Modalità interattiva per test"""
-        print("\n🩺 MODALITÀ INTERATTIVA MEDGEMMA")
+        print("\nMODALITA' INTERATTIVA MEDGEMMA")
         print("=" * 50)
         print("Comandi disponibili:")
         print("  url <URL> <domanda>     - Analizza immagine da URL")
@@ -224,10 +224,10 @@ class MedGemmaTest:
         
         while True:
             try:
-                command = input("\n🏥 Comando: ").strip()
+                command = input("\nComando: ").strip()
                 
                 if command.lower() == "quit":
-                    print("👋 Arrivederci!")
+                    print("Arrivederci!")
                     break
                 
                 elif command.lower() == "test":
@@ -236,7 +236,7 @@ class MedGemmaTest:
                     question = "Describe this chest X-ray. What can you observe?"
                     
                     result = self.analyze_image_from_url(test_url, question)
-                    print(f"\n🤖 RISPOSTA MEDGEMMA:\n{result}")
+                    print(f"\nRISPOSTA MEDGEMMA:\n{result}")
                 
                 elif command.startswith("url "):
                     parts = command[4:].split(" ", 1)
@@ -247,7 +247,7 @@ class MedGemmaTest:
                         question = "Describe this medical image in detail"
                     
                     result = self.analyze_image_from_url(url, question)
-                    print(f"\n🤖 RISPOSTA MEDGEMMA:\n{result}")
+                    print(f"\nRISPOSTA MEDGEMMA:\n{result}")
                 
                 elif command.startswith("file "):
                     parts = command[5:].split(" ", 1)
@@ -258,21 +258,21 @@ class MedGemmaTest:
                         question = "Describe this medical image in detail"
                     
                     result = self.analyze_image_from_file(filepath, question)
-                    print(f"\n🤖 RISPOSTA MEDGEMMA:\n{result}")
+                    print(f"\nRISPOSTA MEDGEMMA:\n{result}")
                 
                 else:
-                    print("❌ Comando non riconosciuto. Usa 'test', 'url', 'file' o 'quit'")
+                    print("Comando non riconosciuto. Usa 'test', 'url', 'file' o 'quit'")
                     
             except KeyboardInterrupt:
-                print("\n👋 Interruzione utente. Arrivederci!")
+                print("\nInterruzione utente. Arrivederci!")
                 break
             except Exception as e:
-                print(f"❌ Errore: {e}")
+                print(f"Errore: {e}")
 
 
 def main():
     """Funzione principale"""
-    print("🏥 MEDGEMMA TEST SUITE")
+    print("MEDGEMMA TEST SUITE")
     print("=" * 50)
     
     try:
@@ -283,11 +283,11 @@ def main():
         medgemma.interactive_mode()
         
     except KeyboardInterrupt:
-        print("\n👋 Test interrotto. Arrivederci!")
+        print("\nTest interrotto. Arrivederci!")
     except Exception as e:
-        print(f"❌ Errore fatale: {e}")
+        print(f"Errore fatale: {e}")
         if "ModuleNotFoundError" in str(e):
-            print("\n💡 SOLUZIONE: Installa le dipendenze")
+            print("\nSOLUZIONE: Installa le dipendenze")
             print("pip install -r requirements.txt")
 
 
